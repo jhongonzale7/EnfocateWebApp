@@ -1,0 +1,101 @@
+/* 1) Carga de Bauhaus Anky extra-ligera */
+@font-face {
+    font-family: 'Bauhaus Anky';
+    src: url('/fonts/BauhausAnky-Extralight.woff2') format('woff2'), url('/fonts/BauhausAnky-Extralight.woff') format('woff');
+    font-weight: 200;
+    font-style: normal;
+}
+
+/* 2) Fondo etéreo y fuente principal */
+body {
+    margin: 0;
+    font-family: 'Bauhaus Anky', sans-serif;
+    background: radial-gradient(circle at top left, rgba(224,247,250,0.8) 0%, rgba(255,255,255,0.8) 100%);
+    color: #222;
+}
+
+/* 3) Card con vidrio esmerilado */
+.card {
+    background-color: rgba(255,255,255,0.6);
+    backdrop-filter: blur(12px);
+    border: none;
+    border-radius: 1rem;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.05);
+}
+
+/* 4) Reloj digital */
+#timerDisplay {
+    font-family: 'Orbitron', monospace;
+    font-size: 3rem;
+    color: #111;
+    text-shadow: 0 0 8px rgba(0,0,0,0.1);
+    letter-spacing: 0.05em;
+}
+
+/* 5) Titulares y texto */
+h1 {
+    font-weight: 200;
+    font-size: 1.75rem;
+    margin-bottom: 0.25rem;
+}
+
+h3 {
+    font-weight: 200;
+    font-size: 1rem;
+    margin-top: 0;
+}
+
+/* 6) Estilos de formulario */
+.form-control {
+    border: none;
+    border-radius: 0.5rem;
+    background-color: rgba(255,255,255,0.8);
+    box-shadow: inset 0 2px 6px rgba(0,0,0,0.05);
+    font-family: inherit;
+}
+
+    .form-control:focus {
+        outline: none;
+        box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem rgba(33,147,176,0.6);
+    }
+
+/* 7) Botones etéreos */
+.btn {
+    border-radius: 50px;
+    padding: 0.6rem 1.4rem;
+    font-weight: 500;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #6dd5ed, #2193b0);
+    border: none;
+    color: #fff;
+}
+
+.btn-success {
+    background: linear-gradient(135deg, #a8edea, #fed6e3);
+    border: none;
+    color: #222;
+}
+
+.btn-outline-secondary {
+    color: #222;
+    background-color: rgba(255,255,255,0.3);
+    border: 1px solid rgba(255,255,255,0.6);
+}
+
+    .btn-outline-secondary:hover {
+        background-color: rgba(255,255,255,0.5);
+    }
+
+.btn-danger {
+    background: linear-gradient(135deg, #fddb92, #d1fdff);
+    border: none;
+    color: #222;
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}

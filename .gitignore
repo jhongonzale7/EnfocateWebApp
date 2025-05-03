@@ -1,0 +1,24 @@
+# Visual Studio
+.vs/
+*.user
+*.suo
+*.sln.docstates
+EnfocateWebApp.csproj.user
+
+# Archivos de compilación
+bin/
+obj/
+
+# Paquetes NuGet
+packages/
+
+# Archivos de configuración local
+appsettings.Development.json
+*.env
+
+# Carpeta de publicación
+publish/
+
+# Archivos de caché y temporales
+*.cache
+*.csproj.*.txt
