@@ -102,17 +102,11 @@ h3 {
 }
 
 .footer {
-    position: static;
-    bottom: 0;
     width: 100%;
-    white-space: normal;
-    text-align: center;
     padding: 1rem 0;
     color: #666;
     font-size: 0.875rem;
-    word-break: break-word;
-    overflow-wrap: anywhere;
-    hyphens: auto;
+    z-index: 10; 
 }
 
 
@@ -153,22 +147,53 @@ h3 {
 
 /* 8) Ajustes responsivos móviles */
 @media (max-width: 576px) {
-    h1 {
-        font-size: 1.5rem;
+    .footer {
+        padding: 0.5rem 0;
+        font-size: 0.75rem;
     }
 
-    #timerDisplay {
-        font-size: 2.5rem;
+    .glass-footer {
+        padding: 0.5rem 0;
+    }
+
+    .container-fluid {
+        padding-left: 10px;
+        padding-right: 10px;
+        padding-bottom: 0.5rem;
     }
 }
 
 /* 9) Ajustes responsivos tabletas */
 @media (min-width: 577px) and (max-width: 768px) {
-    h1 {
-        font-size: 1.6rem;
+    .footer {
+        padding: 0.75rem 0;
+        font-size: 0.8rem;
+    }
+
+    .glass-footer {
+        padding: 0.75rem 0;
+    }
+    .container-fluid {
+        padding-bottom: 0.75rem;
     }
 }
 
+/* Ajustes para ventanas minimizadas en escritorio (baja altura) */
+
+@media (max-height: 600px) {
+    .footer {
+        padding: 0.5rem 0;
+        font-size: 0.75rem;
+    }
+
+    .glass-footer {
+        padding: 0.5rem 0;
+    }
+
+    .container-fluid {
+        padding-bottom: 0.5rem; /* Minimizar espacio en ventanas pequeñas */
+    }
+}
 
 
 
