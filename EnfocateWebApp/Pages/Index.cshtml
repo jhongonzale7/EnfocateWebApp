@@ -15,8 +15,8 @@
     </style>
 }
 
-<div class="container main-container d-flex justify-content-center align-items-center">
-    <div class="card text-center p-4" style="max-width: 360px; width: 100%;">
+    <div class="container main-container d-flex justify-content-center align-items-center main-background">
+    <div class="card glass text-center p-4 mx-auto" style="max-width: 360px; width: 100%;">
         <h1 class="mb-2">Enfócate</h1>
         <h2 id="timerDisplay" class="mb-3">00:00</h2>
         <h3 id="statusMessage" class="mb-4">@Model.StatusMessage</h3>
@@ -26,30 +26,32 @@
 
         <!-- Solo dos campos y un botón -->
         <form id="settingsForm" class="row gx-2 gy-2 justify-content-center mb-4">
-            <div class="col-auto">
+            <div class="col-6 col-sm-auto">
                 <input id="workInput" type="number" min="1"
                        class="form-control text-center"
                        value="@Model.Settings.WorkDurationMinutes"
                        aria-label="Trabajo (min)"
                        placeholder="Trabajo">
             </div>
-            <div class="col-auto">
+            <div class="col-6 col-sm-auto">
                 <input id="breakInput" type="number" min="1"
                        class="form-control text-center"
                        value="@Model.Settings.BreakDurationMinutes"
                        aria-label="Descanso (min)"
                        placeholder="Descanso">
             </div>
-            <div class="col-auto">
-                <button type="submit" class="btn btn-success">Aplicar</button>
+            <div class="col-12 col-sm-auto d-grid">
+                <button type="submit" class="btn btn-success w-100">Aplicar</button>
             </div>
         </form>
 
-        <div>
-            <button id="startButton" class="btn btn-primary me-2">Iniciar</button>
-            <button id="pauseButton" class="btn btn-outline-secondary me-2">Pausar</button>
+
+        <div class="d-flex flex-wrap justify-content-center gap-2 mb-4">
+            <button id="startButton" class="btn btn-primary">Iniciar</button>
+            <button id="pauseButton" class="btn btn-outline-secondary">Pausar</button>
             <button id="resetButton" class="btn btn-danger">Reiniciar</button>
         </div>
+
     </div>
 </div>
 

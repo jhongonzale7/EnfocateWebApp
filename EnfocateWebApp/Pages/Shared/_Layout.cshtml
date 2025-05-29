@@ -11,11 +11,17 @@
     <!-- CSS global -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EnfocateWebApp.styles.css" asp-append-version="true" />
+    <link rel="icon" href="~/favicon.ico" type="image/x-icon" asp-append-version="true" />
+
+    <!-- Favicon estático y dinámico -->
+    <link rel="icon" type="image/x-icon" href="~/images/favicon.ico" asp-append-version="true" />
+    <link rel="apple-touch-icon" sizes="180x180" href="~/images/apple-touch-icon.png" asp-append-version="true" />
+    <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon-32x32.png" asp-append-version="true" />
 
     <!-- Sección opcional para estilos por página -->
     @RenderSection("Styles", required: false)
 </head>
-<body>
+<body class="d-flex flex-column min-vh-100">
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
@@ -38,14 +44,14 @@
         </nav>
     </header>
 
-    <div class="container p-0">
+    <div class="container flex-grow-1 p-0">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <!-- Footer separado correctamente -->
-    <footer class="border-top footer text-muted">
+    <footer class="border-top footer text-muted mt-auto">
         <div class="container">
             &copy; 2025 - EnfocateWebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
         </div>
