@@ -102,11 +102,14 @@ h3 {
 }
 
 .footer {
-    position: absolute;
+    position: static;
     bottom: 0;
     width: 100%;
-    white-space: nowrap;
-    line-height: 60px;
+    white-space: normal;
+    text-align: center;
+    padding: 1rem 0;
+    color: #666;
+    font-size: 0.875rem;
 }
 
 
