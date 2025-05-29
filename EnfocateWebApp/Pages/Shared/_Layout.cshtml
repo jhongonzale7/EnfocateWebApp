@@ -23,7 +23,7 @@
 </head>
 <body class="d-flex flex-column min-vh-100">
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container">
                 <a class="navbar-brand" asp-area="" asp-page="/Index">EnfocateWebApp</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
@@ -44,7 +44,7 @@
         </nav>
     </header>
 
-    <div class="container flex-grow-1 px-3 pt-4 pb-5">
+    <div class="container-fluid flex-grow-1 px-3 px-md-5 pt-4 pb-5">
         <main role="main">
             @RenderBody()
         </main>
@@ -52,8 +52,9 @@
 
     <!-- Footer separado correctamente -->
     <footer class="border-top footer text-muted mt-auto">
-        <div class="container">
-            &copy; 2025 - EnfocateWebApp - <a asp-area="" asp-page="/Privacy">Privacy</a>
+        <div class="container-fluid px-3 text-center">
+            <span class="d-block d-sm-inline">© 2025 - EnfocateWebApp</span>
+            <span class="d-block d-sm-inline"> – <a asp-area="" asp-page="/Privacy">Privacy</a></span>
         </div>
     </footer>
 

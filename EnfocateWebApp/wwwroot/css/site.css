@@ -27,7 +27,7 @@ body {
 /* 4) Reloj digital */
 #timerDisplay {
     font-family: 'Orbitron', monospace;
-    font-size: 3rem;
+    font-size: clamp(2rem, 8vw, 3rem);
     color: #111;
     text-shadow: 0 0 8px rgba(0,0,0,0.1);
     letter-spacing: 0.05em;
@@ -110,6 +110,9 @@ h3 {
     padding: 1rem 0;
     color: #666;
     font-size: 0.875rem;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    hyphens: auto;
 }
 
 
@@ -148,6 +151,23 @@ h3 {
     padding: 2rem;
 }
 
+/* 8) Ajustes responsivos móviles */
+@media (max-width: 576px) {
+    h1 {
+        font-size: 1.5rem;
+    }
+
+    #timerDisplay {
+        font-size: 2.5rem;
+    }
+}
+
+/* 9) Ajustes responsivos tabletas */
+@media (min-width: 577px) and (max-width: 768px) {
+    h1 {
+        font-size: 1.6rem;
+    }
+}
 
 
 
