@@ -1,8 +1,37 @@
 ﻿@page
 @model PrivacyModel
 @{
-    ViewData["Title"] = "Privacy Policy";
+    ViewData["Title"] = "Política de Privacidad";
 }
-<h1>@ViewData["Title"]</h1>
 
-<p>Use this page to detail your site's privacy policy.</p>
+<div class="container my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card glass p-4">
+                <!-- Título principal más grande y centrado -->
+                <h1 class="display-4 text-center mb-5">@ViewData["Title"]</h1>
+
+                <div class="row">
+                    <!-- Sección Información que recopilamos -->
+                    <div class="col-md-6 mb-4">
+                        <h2 class="h4">Información que recopilamos</h2>
+                        <p>
+                            Podemos recopilar información, incluida tu dirección de correo electrónico,
+                            preferencias de uso y datos técnicos (por ejemplo, navegador e IP),
+                            con el fin de optimizar tu experiencia.
+                        </p>
+                    </div>
+
+                    <!-- Sección Contacto -->
+                    <div class="col-md-6 mb-4">
+                        <h2 class="h4">Contacto</h2>
+                        <p>
+                            Para cualquier duda o sugerencia sobre la aplicación, escríbenos a
+                            <a href="mailto:alexvasquezghz@gmail.com">alexvasquezghz@gmail.com</a>.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
