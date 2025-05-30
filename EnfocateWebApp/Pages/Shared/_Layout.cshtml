@@ -9,22 +9,20 @@
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
 
-    <!-- CSS global -->
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
     <link rel="stylesheet" href="~/EnfocateWebApp.styles.css" asp-append-version="true" />
     <link rel="icon" href="~/favicon.ico" type="image/x-icon" asp-append-version="true" />
 
-    <!-- Favicon estático y dinámico -->
     <link rel="icon" type="image/x-icon" href="~/images/favicon.ico" asp-append-version="true" />
     <link rel="apple-touch-icon" sizes="180x180" href="~/images/apple-touch-icon.png" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon-32x32.png" asp-append-version="true" />
 
-    <!-- Favicon dinámico para progreso -->
+   
     <link id="dynamic-favicon" rel="icon" type="image/png" sizes="32x32"
           href="~/images/favicon-32x32.png" asp-append-version="true" />
           <link rel="manifest" href="~/manifest.json" />
 
-    <!-- Sección opcional para estilos por página -->
+   
     @RenderSection("Styles", required: false)
 </head>
 <body class="d-flex flex-column min-vh-100">
@@ -46,6 +44,10 @@
                             <a id="linkPrivacy" class="nav-link text-dark"
                                asp-area="" asp-page="/Privacy">Privacy</a>
                         </li>
+                        <li class="nav-item">
+  <a id="linkManual" class="nav-link text-dark" asp-area="" asp-page="/Manual">Manual</a>
+</li>
+
                     </ul>
                 </div>
             </div>
@@ -58,7 +60,7 @@
         </main>
     </div>
 
-    <!-- Footer responsivo -->
+
     <footer class="border-top footer text-muted mt-auto">
         <div class="container-fluid px-3 text-center">
             <span class="d-block d-sm-inline">© 2025 - EnfocateWebApp</span>
@@ -73,6 +75,7 @@
 
 <script>
   if ('mediaSession' in navigator) {
+    
     navigator.mediaSession.metadata = new MediaMetadata({
       title: 'Enfócate Web App',
       artist: 'Pomodoro',
@@ -81,7 +84,8 @@
     navigator.mediaSession.setActionHandler('play', startTimer);
     navigator.mediaSession.setActionHandler('pause', pauseTimer);
     navigator.mediaSession.setActionHandler('stop', resetTimer);
-    // Actualizar posición en tiempo real (si el navegador lo soporta):
+
+   
     setInterval(() => {
       const pct = (totalDuration - remainingTime) / totalDuration;
       navigator.mediaSession.setPositionState?.({
@@ -90,8 +94,26 @@
         playbackRate: isRunning ? 1 : 0
       });
     }, 1000);
+
+    // 3) Refuerzo iOS cada 5s
+    if (/iP(hone|ad)/.test(navigator.userAgent)) {
+      setInterval(() => {
+        navigator.mediaSession.metadata = new MediaMetadata({
+          title: 'Enfócate Web App',
+          artist: 'Pomodoro',
+          artwork: [{ src: '/images/icon-192.png', sizes: '192x192', type: 'image/png' }]
+        });
+        navigator.mediaSession.setPositionState?.({
+          duration: totalDuration,
+          position: totalDuration - remainingTime,
+          playbackRate: isRunning ? 1 : 0
+        });
+      }, 5000);
+    }
   }
 </script>
+
+
 <script src="~/js/pomodoroTimer.js"></script>
 
 <script>
@@ -100,7 +122,6 @@
   }
 </script>
 
-    <!-- Sección opcional para scripts por página -->
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

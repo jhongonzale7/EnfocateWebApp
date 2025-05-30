@@ -22,13 +22,12 @@
     let startTime;
     let elapsedOffset = 0;
 
-    // Recalcula remainingTime según timestamps
+
     function recalcRemaining() {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         remainingTime = Math.max(totalDuration - elapsed, 0);
     }
 
-    // Dibuja MM:SS y actualiza título
     function updateDisplay() {
         const m = Math.floor(remainingTime / 60).toString().padStart(2, '0');
         const s = (remainingTime % 60).toString().padStart(2, '0');
@@ -41,9 +40,10 @@
         Notification.requestPermission();
     }
 
-    // Al finalizar un periodo
-    // Reemplaza tu función notifyEnd() completa por esta:
     function notifyEnd() {
+        remainingTime = 0;
+        isRunning = false;
+
         const title = isWorkPeriod
             ? '¡Tiempo de trabajo terminado!'
             : '¡Descanso terminado!';
@@ -52,7 +52,7 @@
             : 'Hora de volver a trabajar.';
         const options = { body, requireInteraction: true };
 
-        // 1) Notificación via Service Worker o Notification API
+        // 1) Mostrar notificación (SW o API)
         if (Notification.permission === 'granted') {
             navigator.serviceWorker.ready
                 .then(reg => reg.showNotification(title, options))
@@ -61,14 +61,11 @@
             alert(`${title} ${body}`);
         }
 
-        // 2) Mensaje en pantalla
         statusEl.textContent = 'Periodo finalizado. Pulsa Aceptar para continuar.';
 
-        // 3) Eliminar botón previo si existe
         const old = document.getElementById('acceptPomodoro');
         if (old) old.remove();
 
-        // 4) Crear botón Aceptar siempre (móvil y escritorio)
         const btn = document.createElement('button');
         btn.id = 'acceptPomodoro';
         btn.className = 'btn btn-primary mt-3';
@@ -78,7 +75,6 @@
             workAudio.pause();
             workAudio.currentTime = 0;
 
-            // Alternar periodo y reiniciar
             isWorkPeriod = !isWorkPeriod;
             elapsedOffset = 0;
             remainingTime = isWorkPeriod ? workDuration : breakDuration;
@@ -89,22 +85,31 @@
             startTimer();
         };
         document.querySelector('.card').append(btn);
+
+        if (/iP(hone|ad)/.test(navigator.userAgent)) {
+            btn.click();
+        }
     }
 
-
-    // Inicia o reanuda el temporizador
     function startTimer() {
         if (isRunning) return;
         isRunning = true;
 
+
+        if (/iP(hone|ad)/.test(navigator.userAgent)) {
+            const silent = new Audio('/sounds/silence.mp3');
+            silent.loop = true;
+            silent.play().catch(() => { });
+        }
+
         totalDuration = isWorkPeriod ? workDuration : breakDuration;
 
-        // Desbloquear audio en móviles
+        localStorage.setItem('pomodoroStart', Date.now().toString());
+        localStorage.setItem('isWorkPeriod', isWorkPeriod);
+        localStorage.setItem('isRunning', true);
+ 
         workAudio.play()
-            .then(() => {
-                workAudio.pause();
-                workAudio.currentTime = 0;
-            })
+            .then(() => { workAudio.pause(); workAudio.currentTime = 0; })
             .catch(() => { });
 
         startTime = Date.now() - elapsedOffset * 1000;
@@ -118,7 +123,6 @@
                 clearInterval(timer);
                 isRunning = false;
 
-                // Reproducir audio UNA vez
                 workAudio.loop = false;
                 workAudio.currentTime = 0;
                 workAudio.play().catch(() => { });
@@ -128,42 +132,44 @@
         }, 1000);
     }
 
-    // Pausa el temporizador y guarda offset
+
     function pauseTimer() {
         if (!isRunning) return;
         isRunning = false;
         clearInterval(timer);
         elapsedOffset = Math.floor((Date.now() - startTime) / 1000);
         statusEl.textContent = 'Pausado';
+
+        localStorage.setItem('pomodoroStart', startTime.toString());
+        localStorage.setItem('isWorkPeriod', isWorkPeriod);
+        localStorage.setItem('isRunning', false);
     }
 
-    // Reinicia al inicio de trabajo (permite reconfiguración)
+ 
     function resetTimer() {
-        // 1) Detener cualquier intervalo activo
+
         isRunning = false;
         clearInterval(timer);
 
-        // 2) Reiniciar offset de pausa
         elapsedOffset = 0;
 
-        // 3) Mantener el periodo actual y fijar el tiempo inicial
         remainingTime = isWorkPeriod
             ? workDuration
             : breakDuration;
 
-        // 4) Refrescar pantalla y mensaje según periodo
         updateDisplay();
         statusEl.textContent = isWorkPeriod
             ? 'Configura y empieza tu sesión de Enfócate'
             : 'Configura y comienza tu descanso';
 
-        // 5) Eliminar botón “Aceptar” si existe
+        localStorage.removeItem('pomodoroStart');
+        localStorage.removeItem('isWorkPeriod');
+        localStorage.removeItem('isRunning');
+
         const acceptBtn = document.getElementById('acceptPomodoro');
         if (acceptBtn) acceptBtn.remove();
     }
 
-
-    // Listeners de botones y formulario
     startBtn.addEventListener('click', startTimer);
     pauseBtn.addEventListener('click', pauseTimer);
     resetBtn.addEventListener('click', resetTimer);
@@ -176,7 +182,7 @@
         resetTimer();
     });
 
-    // Dibuja aro de progreso en el favicon
+
     function updateProgressFavicon(pct) {
         const size = 64;
         const canvas = document.createElement('canvas');
@@ -201,7 +207,6 @@
         if (link) link.href = canvas.toDataURL('image/png');
     }
 
-    // Sobrescribir updateDisplay para incluir favicon
     const _origUpdate = updateDisplay;
     updateDisplay = function () {
         _origUpdate();
@@ -209,14 +214,55 @@
         updateProgressFavicon(pct);
     };
 
-    // Inicialización (después de sobrescritura)
+ 
     updateDisplay();
     statusEl.textContent = 'Configura y empieza tu sesión de Enfócate';
 
-    // Confirmación al cambiar de sección
-    document.getElementById('linkPrivacy').addEventListener('click', e => {
-        if (!confirm('Si cambias de sección, el Pomodoro se reiniciará. ¿Continuar?')) {
-            e.preventDefault();
+    
+    ['linkPrivacy', 'linkManual'].forEach(id => {
+        const el = document.getElementById(id);
+        if (!el) return;
+        el.addEventListener('click', e => {
+            const isPaused = statusEl.textContent === 'Pausado';
+            if ((isRunning || isPaused)
+                && !confirm('Si cambias de sección, el Pomodoro se reiniciará. ¿Continuar?')) {
+                e.preventDefault();
+            }
+        });
+    });
+
+    document.addEventListener('visibilitychange', function () {
+        if (document.visibilityState === 'visible') {
+            let startTimestamp = localStorage.getItem('pomodoroStart');
+            let isWork = localStorage.getItem('isWorkPeriod') === 'true';
+            let isRunningStored = localStorage.getItem('isRunning') === 'true';
+
+            let duration = isWork ? workDuration : breakDuration;
+
+            if (startTimestamp && isRunningStored) {
+                let elapsed = Math.floor((Date.now() - parseInt(startTimestamp, 10)) / 1000);
+                if (elapsed >= duration) {        
+
+                    isWorkPeriod = isWork;
+                    isRunning = false;
+                    remainingTime = 0;
+
+                    clearInterval(timer);
+
+                    notifyEnd();
+
+                } else {
+ 
+                    isWorkPeriod = isWork;
+                    remainingTime = duration - elapsed;
+                    updateDisplay();
+
+                    if (isRunningStored) {
+                        startTime = parseInt(startTimestamp, 10);
+                        startTimer();
+                    }
+                }
+            }
         }
     });
 })();

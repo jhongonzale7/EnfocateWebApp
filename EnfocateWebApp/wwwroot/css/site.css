@@ -125,6 +125,11 @@ h3 {
     color: #fff;
 }
 
+    .glass .btn-primary {
+        background: linear-gradient(135deg, #6dd5ed, #2193b0) !important;
+        color: #222 !important;
+    }
+
     .glass h1,
     .glass h3 {
         color: #ffffff;
@@ -135,7 +140,6 @@ h3 {
         border-color: rgba(255, 255, 255, 0.5);
     }
 
-/* ---------------------- Glass Background ---------------------- */
 .main-background {
     background: rgba(255, 255, 255, 0.3);
     backdrop-filter: blur(20px);
@@ -191,7 +195,7 @@ h3 {
     }
 
     .container-fluid {
-        padding-bottom: 0.5rem; /* Minimizar espacio en ventanas pequeñas */
+        padding-bottom: 0.5rem; 
     }
 }
 
