@@ -1,11 +1,17 @@
-﻿(function () {
+﻿// wwwroot/js/pomodoroTimer.js
+
+(function () {
     const workAudio = document.getElementById('workAudio');
     workAudio.load();
 
-    document.getElementById('startButton').addEventListener('click', startTimer);
-    document.getElementById('pauseButton').addEventListener('click', pauseTimer);
-    document.getElementById('resetButton').addEventListener('click', resetTimer);
+    // Controles y elementos de UI
+    const startBtn = document.getElementById('startButton');
+    const pauseBtn = document.getElementById('pauseButton');
+    const resetBtn = document.getElementById('resetButton');
+    const settingsForm = document.getElementById('settingsForm');
+    const statusEl = document.getElementById('statusMessage');
 
+    // Duraciones y estado
     let workDuration = window.workDuration || 25 * 60;
     let breakDuration = window.breakDuration || 5 * 60;
     let totalDuration = workDuration;
@@ -16,10 +22,13 @@
     let startTime;
     let elapsedOffset = 0;
 
+    // Recalcula remainingTime según timestamps
     function recalcRemaining() {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         remainingTime = Math.max(totalDuration - elapsed, 0);
     }
+
+    // Dibuja MM:SS y actualiza título
     function updateDisplay() {
         const m = Math.floor(remainingTime / 60).toString().padStart(2, '0');
         const s = (remainingTime % 60).toString().padStart(2, '0');
@@ -27,140 +36,138 @@
         document.title = `${m}:${s} – Enfócate Web App`;
     }
 
+    // Pedir permiso de notificaciones al inicio
     if ('Notification' in window) {
         Notification.requestPermission();
     }
-    function notifyEnd() {
 
+    // Al finalizar un periodo
+    // Reemplaza tu función notifyEnd() completa por esta:
+    function notifyEnd() {
         const title = isWorkPeriod
             ? '¡Tiempo de trabajo terminado!'
             : '¡Descanso terminado!';
         const body = isWorkPeriod
             ? 'Hora de descansar.'
             : 'Hora de volver a trabajar.';
+        const options = { body, requireInteraction: true };
 
+        // 1) Notificación via Service Worker o Notification API
         if (Notification.permission === 'granted') {
-            new Notification(title, { body, requireInteraction: true })
-                .onclick = () => window.focus();
+            navigator.serviceWorker.ready
+                .then(reg => reg.showNotification(title, options))
+                .catch(() => new Notification(title, options));
         } else {
-
             alert(`${title} ${body}`);
         }
 
-        document.getElementById('statusMessage').textContent =
-            'Periodo finalizado. Pulsa Aceptar para continuar.';
+        // 2) Mensaje en pantalla
+        statusEl.textContent = 'Periodo finalizado. Pulsa Aceptar para continuar.';
 
+        // 3) Eliminar botón previo si existe
+        const old = document.getElementById('acceptPomodoro');
+        if (old) old.remove();
+
+        // 4) Crear botón Aceptar siempre (móvil y escritorio)
         const btn = document.createElement('button');
-        btn.textContent = 'Aceptar';
-        btn.className = 'btn btn-primary mt-3';
         btn.id = 'acceptPomodoro';
+        btn.className = 'btn btn-primary mt-3';
+        btn.textContent = 'Aceptar';
         btn.onclick = () => {
-
             workAudio.loop = false;
             workAudio.pause();
             workAudio.currentTime = 0;
 
+            // Alternar periodo y reiniciar
             isWorkPeriod = !isWorkPeriod;
-            resetTimer();
-            btn.remove();
+            elapsedOffset = 0;
+            remainingTime = isWorkPeriod ? workDuration : breakDuration;
+            updateDisplay();
+            statusEl.textContent = isWorkPeriod ? 'Trabajando…' : 'Descansando…';
 
+            btn.remove();
             startTimer();
         };
-
-
         document.querySelector('.card').append(btn);
     }
 
-    // Función para iniciar o reanudar el temporizador
-    // wwwroot/js/pomodoroTimer.js
 
+    // Inicia o reanuda el temporizador
     function startTimer() {
         if (isRunning) return;
         isRunning = true;
 
-        // 1) Definir duración del periodo actual
         totalDuration = isWorkPeriod ? workDuration : breakDuration;
-        // 2) Ajustar startTime teniendo en cuenta pausas
+
+        // Desbloquear audio en móviles
+        workAudio.play()
+            .then(() => {
+                workAudio.pause();
+                workAudio.currentTime = 0;
+            })
+            .catch(() => { });
+
         startTime = Date.now() - elapsedOffset * 1000;
+        statusEl.textContent = isWorkPeriod ? 'Trabajando…' : 'Descansando…';
 
         timer = setInterval(() => {
-            // 3) Recalcular y refrescar pantalla
             recalcRemaining();
             updateDisplay();
 
-            // 4) Al llegar a cero, parar el interval y reproducir audio UNA sola vez
             if (remainingTime <= 0) {
                 clearInterval(timer);
                 isRunning = false;
 
-                // Reproducir audio una vez (no en bucle)
+                // Reproducir audio UNA vez
                 workAudio.loop = false;
                 workAudio.currentTime = 0;
                 workAudio.play().catch(() => { });
 
-                // 5) Notificar fin de periodo
                 notifyEnd();
             }
         }, 1000);
     }
 
+    // Pausa el temporizador y guarda offset
+    function pauseTimer() {
+        if (!isRunning) return;
+        isRunning = false;
+        clearInterval(timer);
+        elapsedOffset = Math.floor((Date.now() - startTime) / 1000);
+        statusEl.textContent = 'Pausado';
+    }
 
-    // Función para reiniciar el temporizador al inicio del periodo
+    // Reinicia al inicio de trabajo (permite reconfiguración)
     function resetTimer() {
-        // 1) Detener cualquier interval activo
+        // 1) Detener cualquier intervalo activo
         isRunning = false;
         clearInterval(timer);
 
         // 2) Reiniciar offset de pausa
         elapsedOffset = 0;
 
-        // 3) Volver siempre al periodo de TRABAJO
-        isWorkPeriod = true;
+        // 3) Mantener el periodo actual y fijar el tiempo inicial
+        remainingTime = isWorkPeriod
+            ? workDuration
+            : breakDuration;
 
-        // 4) Restaurar remainingTime al inicio del trabajo
-        remainingTime = workDuration;
+        // 4) Refrescar pantalla y mensaje según periodo
+        updateDisplay();
+        statusEl.textContent = isWorkPeriod
+            ? 'Configura y empieza tu sesión de Enfócate'
+            : 'Configura y comienza tu descanso';
 
-        // 5) Eliminar botón “Aceptar” si sigue en pantalla
+        // 5) Eliminar botón “Aceptar” si existe
         const acceptBtn = document.getElementById('acceptPomodoro');
         if (acceptBtn) acceptBtn.remove();
-
-        // 6) Actualizar display y texto
-        updateDisplay();
-        document.getElementById('statusMessage').textContent =
-            'Configura y empieza tu sesión de Enfócate';
     }
 
 
-
-    function pauseTimer() {
-        if (!isRunning) return;
-        isRunning = false;
-        clearInterval(timer);
-        elapsedOffset = Math.floor((Date.now() - startTime) / 1000);
-        document.getElementById('statusMessage').textContent = 'Pausado';
-    }
-    function resetTimer() {
-        // 1) Detener cualquier intervalo activo
-        isRunning = false;
-        clearInterval(timer);
-
-        // 2) Reiniciar offset para que al reanudar empiece desde cero
-        elapsedOffset = 0;
-
-        // 3) Volver al inicio del periodo actual (trabajo o descanso)
-        remainingTime = isWorkPeriod ? workDuration : breakDuration;
-
-        // 4) Actualizar la pantalla y el mensaje
-        updateDisplay();
-        document.getElementById('statusMessage').textContent =
-            isWorkPeriod
-                ? 'Configura y empieza tu sesión de Enfócate'
-                : 'Configura y comienza tu descanso';
-
-    }
-
-
-    document.getElementById('settingsForm').addEventListener('submit', e => {
+    // Listeners de botones y formulario
+    startBtn.addEventListener('click', startTimer);
+    pauseBtn.addEventListener('click', pauseTimer);
+    resetBtn.addEventListener('click', resetTimer);
+    settingsForm.addEventListener('submit', e => {
         e.preventDefault();
         const wd = parseInt(document.getElementById('workInput').value, 10);
         const bd = parseInt(document.getElementById('breakInput').value, 10);
@@ -169,52 +176,47 @@
         resetTimer();
     });
 
-    /**
-      * Dibuja un aro de progreso en el favicon
-      * @param {number} pct Valor entre 0 y 1 con el % completado 
-      */
+    // Dibuja aro de progreso en el favicon
     function updateProgressFavicon(pct) {
         const size = 64;
         const canvas = document.createElement('canvas');
         canvas.width = canvas.height = size;
         const ctx = canvas.getContext('2d');
 
-        // 1) Fondo circular (btn-primary)
         ctx.fillStyle = '#1b6ec2';
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, size / 2, 0, Math.PI * 2);
         ctx.fill();
 
-        // 2) Arco de progreso en blanco
         const thickness = 6;
         ctx.strokeStyle = '#ffffff';
         ctx.lineWidth = thickness;
-        const start = -Math.PI / 2;                      
-        const end = start + Math.PI * 2 * pct;            
+        const start = -Math.PI / 2;
+        const end = start + Math.PI * 2 * pct;
         ctx.beginPath();
         ctx.arc(size / 2, size / 2, size / 2 - thickness, start, end);
         ctx.stroke();
 
-        // 3) Actualiza el <link> del favicon
         const link = document.getElementById('dynamic-favicon');
         if (link) link.href = canvas.toDataURL('image/png');
     }
 
-        const _originalUpdateDisplay = updateDisplay;
-        updateDisplay = function () {
-        _originalUpdateDisplay();
+    // Sobrescribir updateDisplay para incluir favicon
+    const _origUpdate = updateDisplay;
+    updateDisplay = function () {
+        _origUpdate();
         const pct = (totalDuration - remainingTime) / totalDuration;
         updateProgressFavicon(pct);
     };
 
+    // Inicialización (después de sobrescritura)
     updateDisplay();
-    document.getElementById('statusMessage').textContent =
-        'Configura y empieza tu sesión de Enfócate';
+    statusEl.textContent = 'Configura y empieza tu sesión de Enfócate';
 
+    // Confirmación al cambiar de sección
     document.getElementById('linkPrivacy').addEventListener('click', e => {
         if (!confirm('Si cambias de sección, el Pomodoro se reiniciará. ¿Continuar?')) {
             e.preventDefault();
         }
     });
-
-})();  
+})();
