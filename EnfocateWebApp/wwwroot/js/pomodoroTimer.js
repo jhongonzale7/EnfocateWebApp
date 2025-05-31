@@ -35,12 +35,12 @@
         document.title = `${m}:${s} – Enfócate Web App`;
     }
 
-    // Pedir permiso de notificaciones al inicio
     if ('Notification' in window) {
         Notification.requestPermission();
     }
 
     function notifyEnd() {
+
         remainingTime = 0;
         isRunning = false;
 
@@ -52,42 +52,51 @@
             : 'Hora de volver a trabajar.';
         const options = { body, requireInteraction: true };
 
-        // 1) Mostrar notificación (SW o API)
-        if (Notification.permission === 'granted') {
-            navigator.serviceWorker.ready
-                .then(reg => reg.showNotification(title, options))
-                .catch(() => new Notification(title, options));
-        } else {
-            alert(`${title} ${body}`);
+     
+        if (!/iP(hone|ad|od)|Android/i.test(navigator.userAgent)) {
+            if (Notification.permission === 'granted') {
+                navigator.serviceWorker.ready
+                    .then(reg => reg.showNotification(title, options))
+                    .catch(() => new Notification(title, options));
+            } else {
+                alert(`${title} ${body}`);
+            }
         }
-
-        statusEl.textContent = 'Periodo finalizado. Pulsa Aceptar para continuar.';
 
         const old = document.getElementById('acceptPomodoro');
         if (old) old.remove();
 
-        const btn = document.createElement('button');
-        btn.id = 'acceptPomodoro';
-        btn.className = 'btn btn-primary mt-3';
-        btn.textContent = 'Aceptar';
-        btn.onclick = () => {
-            workAudio.loop = false;
-            workAudio.pause();
-            workAudio.currentTime = 0;
+        if (!/iP(hone|ad|od)|Android/i.test(navigator.userAgent)) {
+            statusEl.textContent = 'Periodo finalizado. Pulsa Aceptar para continuar.';
+            const btn = document.createElement('button');
+            btn.id = 'acceptPomodoro';
+            btn.className = 'btn btn-primary mt-3';
+            btn.textContent = 'Aceptar';
+            btn.onclick = () => {
+                workAudio.loop = false;
+                workAudio.pause();
+                workAudio.currentTime = 0;
 
+                isWorkPeriod = !isWorkPeriod;
+                elapsedOffset = 0;
+                remainingTime = isWorkPeriod ? workDuration : breakDuration;
+                updateDisplay();
+                statusEl.textContent = isWorkPeriod ? 'Trabajando…' : 'Descansando…';
+
+                btn.remove();
+                startTimer();
+            };
+            document.querySelector('.card').append(btn);
+
+        } else {
+         
             isWorkPeriod = !isWorkPeriod;
             elapsedOffset = 0;
             remainingTime = isWorkPeriod ? workDuration : breakDuration;
             updateDisplay();
-            statusEl.textContent = isWorkPeriod ? 'Trabajando…' : 'Descansando…';
-
-            btn.remove();
-            startTimer();
-        };
-        document.querySelector('.card').append(btn);
-
-        if (/iP(hone|ad)/.test(navigator.userAgent)) {
-            btn.click();
+            statusEl.textContent = 'Periodo finalizado. Pulsa "Iniciar" para comenzar tu ' + (isWorkPeriod ? 'sesión de trabajo.' : 'descanso.');
+            
+            startBtn.disabled = false;
         }
     }
 
