@@ -22,12 +22,10 @@
     let startTime;
     let elapsedOffset = 0;
 
-
     function recalcRemaining() {
         const elapsed = Math.floor((Date.now() - startTime) / 1000);
         remainingTime = Math.max(totalDuration - elapsed, 0);
     }
-
     function updateDisplay() {
         const m = Math.floor(remainingTime / 60).toString().padStart(2, '0');
         const s = (remainingTime % 60).toString().padStart(2, '0');
@@ -38,7 +36,6 @@
     if ('Notification' in window) {
         Notification.requestPermission();
     }
-
     function notifyEnd() {
 
         remainingTime = 0;
@@ -99,11 +96,9 @@
             startBtn.disabled = false;
         }
     }
-
     function startTimer() {
         if (isRunning) return;
         isRunning = true;
-
 
         if (/iP(hone|ad)/.test(navigator.userAgent)) {
             const silent = new Audio('/sounds/silence.mp3');
@@ -141,7 +136,6 @@
         }, 1000);
     }
 
-
     function pauseTimer() {
         if (!isRunning) return;
         isRunning = false;
@@ -153,8 +147,6 @@
         localStorage.setItem('isWorkPeriod', isWorkPeriod);
         localStorage.setItem('isRunning', false);
     }
-
- 
     function resetTimer() {
 
         isRunning = false;
@@ -190,8 +182,6 @@
         if (!isNaN(bd) && bd > 0) breakDuration = bd * 60;
         resetTimer();
     });
-
-
     function updateProgressFavicon(pct) {
         const size = 64;
         const canvas = document.createElement('canvas');
@@ -222,12 +212,10 @@
         const pct = (totalDuration - remainingTime) / totalDuration;
         updateProgressFavicon(pct);
     };
-
  
     updateDisplay();
     statusEl.textContent = 'Configura y empieza tu sesión de Enfócate';
 
-    
     ['linkPrivacy', 'linkManual'].forEach(id => {
         const el = document.getElementById(id);
         if (!el) return;
@@ -274,4 +262,13 @@
             }
         }
     });
+
+    window.startTimer = startTimer;
+    window.pauseTimer = pauseTimer;
+    window.resetTimer = resetTimer;
+    window.totalDuration = totalDuration;
+    window.remainingTime = remainingTime;
+    window.isRunning = isRunning;
+
 })();
+

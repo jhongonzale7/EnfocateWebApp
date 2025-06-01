@@ -1,6 +1,5 @@
 ﻿using EnfocateService.Services;
 using Microsoft.AspNetCore.CookiePolicy;
-using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 

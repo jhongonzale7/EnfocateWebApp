@@ -8,13 +8,33 @@
         <div class="col-12 col-md-8">
             <div class="card glass p-4">
                 <h1 class="display-4 text-center mb-4">@ViewData["Title"]</h1>
-                <p>EnfocateWebApp es una aplicación web diseñada para ayudarte a mejorar tu productividad mediante la técnica Pomodoro. Esta técnica divide tu tiempo en intervalos de trabajo enfocados (generalmente 25 minutos) seguidos de descansos cortos (5 minutos), promoviendo concentración y evitando el agotamiento.</p>
-                <p>Con EnfocateWebApp, puedes:</p>
+                <p>
+                    <strong>EnfocateWebApp</strong> es una aplicación web basada en la técnica Pomodoro. Te ayuda a organizar tu tiempo y aumentar tu productividad al dividir tu trabajo en intervalos de enfoque y descanso.
+                </p>
                 <ul>
-                    <li>Configurar tiempos personalizados: Ajusta la duración de las sesiones de trabajo y descanso según tus necesidades (por ejemplo, 25 minutos de trabajo y 5 minutos de descanso).</li>
-                    <li>Gestionar sesiones: Inicia, pausa o reinicia el temporizador con un solo clic para adaptarte a tu ritmo de trabajo.</li>
-                    <li>Recibir notificaciones: Al finalizar cada período (trabajo o descanso), recibirás una alerta sonora para mantenerte en el flujo de la técnica Pomodoro.</li>
+                    <li>Configura libremente el tiempo de trabajo y de descanso.</li>
+                    <li>Puedes iniciar, pausar o reiniciar tus sesiones en cualquier momento.</li>
+                    <li>Recibe notificaciones al finalizar cada periodo <span style="font-size:90%;">(solo en computador)</span>.</li>
                 </ul>
+
+                <h2>¿Cómo usar EnfocateWebApp?</h2>
+                <ol>
+                    <li>Introduce la duración de tus periodos de trabajo y descanso en los campos correspondientes.</li>
+                    <li>Pulsa <strong>“Iniciar”</strong> para empezar tu sesión Pomodoro.</li>
+                    <li>
+                        Cuando el temporizador llegue a cero:
+                        <ul>
+                            <li>En <strong>computadora</strong>, recibirás una notificación y deberás pulsar <strong>“Aceptar”</strong> para pasar al siguiente periodo.</li>
+                            <li>En <strong>celular</strong>, el temporizador se detiene y muestra el mensaje de fin de periodo. Debes pulsar <strong>“Iniciar”</strong> para continuar con el siguiente ciclo.</li>
+                        </ul>
+                    </li>
+                    <li>Repite este proceso para alternar entre trabajo y descanso.</li>
+                </ol>
+
+                <p class="mt-4">
+                    ¡Listo! Así puedes aprovechar la técnica Pomodoro desde cualquier dispositivo.<br>
+                    <span style="font-size:90%;">¿Tienes dudas? Revisa la sección de <a asp-page="/Privacy">Privacidad</a> o contáctanos por correo.</span>
+                </p>
             </div>
         </div>
     </div>
