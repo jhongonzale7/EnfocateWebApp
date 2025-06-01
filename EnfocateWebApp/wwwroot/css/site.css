@@ -1,12 +1,5 @@
-/* 1) Carga de Bauhaus Anky extra-ligera */
-@font-face {
-    font-family: 'Bauhaus Anky';
-    src: url('/fonts/BauhausAnky-Extralight.woff2') format('woff2'), url('/fonts/BauhausAnky-Extralight.woff') format('woff');
-    font-weight: 200;
-    font-style: normal;
-}
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
 
-/* 2) Fondo etéreo y fuente principal */
 body {
     margin: 0;
     font-family: 'Bauhaus Anky', sans-serif;
@@ -100,15 +93,6 @@ h3 {
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(0,0,0,0.08);
 }
-
-.footer {
-    width: 100%;
-    padding: 1rem 0;
-    color: #666;
-    font-size: 0.875rem;
-    z-index: 10; 
-}
-
 
 .glass {
     

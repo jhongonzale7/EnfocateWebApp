@@ -4,17 +4,6 @@
     ViewData["Title"] = "Enfócate Web App";
 }
 
-@section Styles {
-    <!-- Google Font para el reloj digital -->
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
-    <style>
-        /* Container full height menos espacio para footer */
-        .main-container {
-          min-height: calc(100vh - 120px);
-        }
-    </style>
-}
-
 <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 120px);">
     <div class="card glass text-center p-4 mx-auto" style="max-width: 320px; width: 100%;">
         <h1 class="mb-2">Enfócate</h1>
@@ -24,7 +13,6 @@
         <!-- Audio para notificaciones -->
         <audio id="workAudio" src="~/sounds/alert.mp3" preload="auto" asp-append-version="true"></audio>
 
-        <!-- Solo dos campos y un botón -->
         <form id="settingsForm" class="mb-4">
             <div class="row gx-2 gy-2 justify-content-center">
                 <div class="col-6 col-sm-5 col-md-4">
@@ -34,8 +22,9 @@
                        aria-label="Trabajo (min)"
                        placeholder="Trabajo">
             </div>
+
                  <div class="col-6 col-sm-5 col-md-4">
-                <input id="breakInput" type="number" min="1"
+                      <input id="breakInput" type="number" min="1"
                        class="form-control text-center"
                        value="@Model.Settings.BreakDurationMinutes"
                        aria-label="Descanso (min)"
@@ -48,7 +37,6 @@
                 <button type="submit" class="btn btn-success w-100">Aplicar</button>
                 </div>
             </div>
-
         </form>
 
 

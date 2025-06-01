@@ -16,12 +16,10 @@
     <link rel="icon" type="image/x-icon" href="~/images/favicon.ico" asp-append-version="true" />
     <link rel="apple-touch-icon" sizes="180x180" href="~/images/apple-touch-icon.png" asp-append-version="true" />
     <link rel="icon" type="image/png" sizes="32x32" href="~/images/favicon-32x32.png" asp-append-version="true" />
-
    
     <link id="dynamic-favicon" rel="icon" type="image/png" sizes="32x32"
           href="~/images/favicon-32x32.png" asp-append-version="true" />
           <link rel="manifest" href="~/manifest.json" />
-
    
     @RenderSection("Styles", required: false)
 </head>
@@ -68,10 +66,13 @@
         </div>
     </footer>
 
-    <!-- Scripts comunes -->
+    <!-- Scripts -->
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/pomodoroTimer.js"></script>
+
+@*     <script src="~/js/site.js" asp-append-version="true"></script> *@
+    
 
 <script>
   if ('mediaSession' in navigator) {
@@ -112,9 +113,6 @@
     }
   }
 </script>
-
-
-<script src="~/js/pomodoroTimer.js"></script>
 
 <script>
   if ('serviceWorker' in navigator) {
